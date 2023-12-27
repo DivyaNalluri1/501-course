@@ -1,5 +1,45 @@
-function hello()
-{
-    console.log("Hello Node.Js!");
-}
-hello();
+const http = require('http');
+const fs = require('fs');
+
+let homeContent = "";
+let projectContent = "";
+let registrationContent = "";
+
+fs.readFile('home.html', (err, home) => {
+    if (err) {
+        throw err;
+    }
+    homeContent = home;
+});
+
+fs.readFile('project.html', (err, project) => {
+    if (err) {
+        throw err;
+    }
+    projectContent = project;
+});
+
+fs.readFile('registration.html', (err, registration) => {
+    if (err) {
+        throw err;
+    }
+    registrationContent = registration;
+});
+
+http.createServer((request, response) => {
+    let url = request.url;
+    response.writeHeader(200, { "content-Type": "text/html" });
+    switch (url) {
+        case "/project":
+            response.write(projectContent);
+            break;
+        case "/registration":
+            response.write(registrationContent);
+            break;
+        default:
+            response.write(homeContent);
+            break;
+    }
+    response.end();
+})
+    .listen(3000);
